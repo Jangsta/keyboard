@@ -6,17 +6,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./server/index.js",
-    "build": "webpack --mode development"
+    "build": "webpack --mode development",
+    "scrape": "node ./webscraper/index.js"
   },
   "author": "Austin Jang",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.1",
     "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql": "^14.6.0",
     "puppeteer": "^2.0.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
   },
   "devDependencies": {
+    "@angular/cli": "^8.3.23",
     "@babel/core": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
     "@babel/preset-react": "^7.8.3",

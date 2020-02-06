@@ -2,11 +2,13 @@
 
 ## Description
 
-Step-by-step guide and other tools to make a custom mechanical keyboard.
+This is a step-by-step guide and other tools to make a custom mechanical keyboard.
 
 ## Built With
 
-* React
+* Angular
 * Node.js
 * Express
 * MySQL
+* GraphQL
+* Puppeteer

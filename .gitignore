@@ -1,1 +1,7 @@
 node_modules/
+webscraper/config.js
+webscraper/node_modules/
+server/node_modules/
+client/node_modules/
+client-react /node_modules/
+notes.txt
