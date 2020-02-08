@@ -80,7 +80,7 @@ CREATE TABLE keyboards (
   plate_type VARCHAR(30), -- expects full, half, noplate
   plate_material VARCHAR(30), -- expects aluminum, brass, carbon fiber, fre4, polycarbonate, acrylic, etc.
   angle DECIMAL(10,2), --in degrees, example: 6.5 (° implied)
-  build_options VARCHAR(30), -- expects kit, prebuilt
+  build_options VARCHAR(300), -- expects kit, prebuilt
   programmability VARCHAR(30), -- expects fully programmable
   switch_compatability VARCHAR(30), -- expects mx, alps
   dimensions VARCHAR(200), -- expects string 100cmx100cmx100cm
