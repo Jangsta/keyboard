@@ -3,7 +3,16 @@
  *   *
  *    * @desc Looks for a "nyan cat pullover" on amazon.com, goes two page two clicks the third one.
  *     */
+function contains(elements, text) {
+	//var elements = document.querySelectorAll(selector);
+	
+	return Array.prototype.filter.call(elements, function(element){
+		return RegExp(text).test(element);
+	});
+}
+
 const puppeteer = require('puppeteer')
+var fs = require('fs'); 
 const screenshot = 'sleekeyboards.png'
 try {
 	(async () => {
@@ -22,7 +31,7 @@ try {
 		let data = await page.evaluate(()=>{	
 			let links = document.querySelectorAll('.image a');
 			let result = [];
-			links.forEach((link, i)=>{
+			links.forEach((link)=>{
 				result.push(link.href);
 			});
 			return result;
@@ -37,10 +46,17 @@ try {
 			});
 			return result;
 		});
-		console.log(keyboardinfo);
+		console.log('here');
+		console.log(contains(keyboardinfo, 'GB Date'));
+		let parsedkeyboardinfo = contains(keyboardinfo, 'GB Date');
 		//await page.screenshot({path: screenshot})
 		//console.log('See screenshot: ' + screenshot)
 		await browser.close()
+
+		var file = fs.createWriteStream('sleekkeyboards.txt');
+		file.on('error', function(err) { /* error handling */ });
+		parsedkeyboardinfo.forEach(function(v) { file.write(v + '\n'); });
+		file.end();
 	})()
 } catch (err) {
 	  console.error(err)
