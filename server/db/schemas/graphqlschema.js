@@ -155,7 +155,7 @@ const RootQuery = new GraphQLObjectType({
     keysets: {
       type: new GraphQLList(KeysetType),
       resolve(parent, args) {
-        return keysets;
+        return model.getKeysets();
       }
     },
     vendors: {
