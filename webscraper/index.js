@@ -1,8 +1,3 @@
-/**
- *  * @name Amazon search
- *   *
- *    * @desc Looks for a "nyan cat pullover" on amazon.com, goes two page two clicks the third one.
- *     */
 function contains(elements, text) {
 	//var elements = document.querySelectorAll(selector);
 	
@@ -11,11 +6,11 @@ function contains(elements, text) {
 	});
 }
 
-const puppeteer = require('puppeteer')
+const puppeteer = require('puppeteer');
 var fs = require('fs'); 
-const screenshot = 'sleekeyboards.png'
-try {
-	(async () => {
+const screenshot = 'sleekeyboards.png';
+
+const sleekkeyboards = async () => {
 		const browser = await puppeteer.launch({headless: true});
 		const page = await browser.newPage();
 		await page.goto('https://sleekeyboards.com/#keyboards');
@@ -51,13 +46,41 @@ try {
 		let parsedkeyboardinfo = contains(keyboardinfo, 'GB Date');
 		//await page.screenshot({path: screenshot})
 		//console.log('See screenshot: ' + screenshot)
-		await browser.close()
+		await browser.close();
 
 		var file = fs.createWriteStream('sleekkeyboards.txt');
 		file.on('error', function(err) { /* error handling */ });
 		parsedkeyboardinfo.forEach(function(v) { file.write(v + '\n'); });
 		file.end();
-	})()
-} catch (err) {
-	  console.error(err)
+};
+
+const geekhack = async () => {
+	const browser = await puppeteer.launch({headless: true});
+	const page = await browser.newPage();
+	await page.goto('https://geekhack.org/index.php?board=70.0');
+	await page.waitForSelector('td.subject.windowbg2');
+	let data = await page.evaluate(() => {
+		let result = [];
+		document.querySelectorAll('td.subject.windowbg2').forEach((element) => {
+			let links = element.querySelectorAll('a');
+			let replyviews = element.nextElementSibling.innerText.split('\n');
+			let lastpost = element.nextElementSibling.nextElementSibling.innerText.split('\n');
+				let currentresult = {
+				url: links[0].href,
+				title: links[0].innerText,
+				author: links[1].innerText,
+				authorlink: links[1].href,
+				views: replyviews[0].split(' ')[0],
+				replies: replyviews[1].split(' ')[0],
+				lastpost: lastpost[0],
+				lastpostauthor: lastpost[1]
+			}
+			result.push(currentresult);
+		});
+		return result;
+	});
+	console.log(data[0], 'length:' + data.length);
+	await browser.close();
 }
+
+geekhack();
