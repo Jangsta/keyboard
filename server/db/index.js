@@ -1,14 +1,13 @@
 const { password } = require('./config.js');
-const mysql = require('mysql');
+const { Pool } = require('pg');
 
-const connection = mysql.createConnection({
+const pool = new Pool({
+  user: 'postgres',
   host: 'localhost',
   database: 'keyboard',
-  user: 'student',
-  password: 'password'
-}, ()=>{
-  console.log('mysql connected');
+  password: password,
+  port: 5432,
 });
 
-module.exports = connection;
+module.exports = pool;
 
