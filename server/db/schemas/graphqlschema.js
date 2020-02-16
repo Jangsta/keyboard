@@ -142,7 +142,7 @@ const RootQuery = new GraphQLObjectType({
       type: VendorType,
       args: { id: {type: GraphQLID} },
       resolve(parent, args) {
-        return _.find(vendors, { id: parseInt(args.id) });
+        return model.getVendor({id: args.id}).then(results => results[0]);
       }
     },
     keyset: {
@@ -161,7 +161,7 @@ const RootQuery = new GraphQLObjectType({
     vendors: {
       type: new GraphQLList(VendorType),
       resolve(parent, args) {
-        return vendors;
+        return model.getVendors();
       }
     }
   }
