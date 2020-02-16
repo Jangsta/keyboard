@@ -1,13 +1,11 @@
-CREATE DATABASE IF NOT EXISTS keyboard;
-
-USE keyboard;
+\c keyboard;
 
 DROP TABLE IF EXISTS keysets;
 DROP TABLE IF EXISTS keyboards;
 DROP TABLE IF EXISTS vendors;
 
 CREATE TABLE vendors(
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id SERIAL UNIQUE,
   name VARCHAR(50) NOT NULL,
   description VARCHAR(3000),
   website_url VARCHAR(300), -- main website url
@@ -21,7 +19,7 @@ CREATE TABLE vendors(
 );
 
 CREATE TABLE keysets (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id SERIAL UNIQUE,
   name VARCHAR(30),
   manufacturer VARCHAR(100), -- gmk, epbt
   material VARCHAR(30), -- expects abs, pbt
@@ -39,7 +37,7 @@ CREATE TABLE keysets (
 );
 
 CREATE TABLE keyboards (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id SERIAL UNIQUE,
   tags VARCHAR(500), -- just csv for now
   name VARCHAR(30),
   description VARCHAR(3000),
