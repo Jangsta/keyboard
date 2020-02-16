@@ -93,7 +93,7 @@ const KeysetType = new GraphQLObjectType({
     vendor: {
       type: VendorType,
       resolve(parent, args){
-        return _.find(vendors, {id: parent.vendor_id})
+        return model.getVendorsByIdDataloader.load(parent.vendor_id);
       }
     },
     url: { type: GraphQLString },
