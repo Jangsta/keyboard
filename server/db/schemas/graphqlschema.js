@@ -14,8 +14,7 @@ var vendors = [
     facebook_url: 'https://www.facebook.com/drop',
     twitter_url: 'https://twitter.com/drop',
     payment_types: 'paypal',
-    location: 'US',
-    keysets: [1, 2]
+    location: 'US'
   }
 ];
 
@@ -71,7 +70,8 @@ const VendorType = new GraphQLObjectType({
     keysets: {
       type: new GraphQLList(KeysetType),
       resolve(parent, args) {
-        return _.filter(keysets, {vendor_id: parent.id})
+        return model.getKeysetsByIdDataloader.load(parent.id);
+        // return model.getVendorsByIdDataloader.load(parent.id);
       }
     }
   })

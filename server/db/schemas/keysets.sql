@@ -18,6 +18,16 @@ CREATE TABLE vendors(
   location VARCHAR(50) -- ex. US,EU,SEA
 );
 
+DROP TABLE IF EXISTS images;
+
+CREATE TABLE images (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  product_id INT NOT NULL,
+  comment VARCHAR(3000),
+  url VARCHAR(300),
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
 CREATE TABLE keysets (
   id SERIAL UNIQUE,
   name VARCHAR(30),

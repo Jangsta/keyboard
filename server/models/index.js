@@ -17,6 +17,14 @@ const models = {
     return result.rows;
   },
 
+  getKeysetsByVendorId: async (ids) => {
+    let client = await db.connect();
+    let sqlquery = 'select json_agg(keysets.*) from keysets where vendor_id=ANY($1::int[]) GROUP BY vendor_id';
+    let result = await client.query(sqlquery, [ids]);
+    client.release();
+    return result.rows.map(row => row.json_agg);
+  },
+
   getVendor: async ({ id }) => {
     let client = await db.connect();
     let sqlquery = 'SELECT * FROM vendors WHERE id=$1::int';
@@ -43,7 +51,8 @@ const models = {
 };
 
 const dataloaders = {
-  getVendorsByIdDataloader: new DataLoader(models.getVendorsById)
+  getVendorsByIdDataloader: new DataLoader(models.getVendorsById),
+  getKeysetsByIdDataloader: new DataLoader(models.getKeysetsByVendorId)
 };
 
 module.exports = {...dataloaders, ...models};
