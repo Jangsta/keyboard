@@ -1,7 +1,10 @@
 \c keyboard;
 
+DROP TABLE IF EXISTS group_buys;
 DROP TABLE IF EXISTS keysets;
 DROP TABLE IF EXISTS keyboards;
+DROP TABLE IF EXISTS images;
+DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS vendors;
 
 CREATE TABLE vendors(
@@ -18,43 +21,56 @@ CREATE TABLE vendors(
   location VARCHAR(50) -- ex. US,EU,SEA
 );
 
-DROP TABLE IF EXISTS images;
+CREATE TABLE products (
+  id SERIAL UNIQUE,
+  tags VARCHAR(500), -- just csv for now
+  name VARCHAR(30),
+  vendor_id INT,
+  description VARCHAR(5000),
+  product_type INT, -- 1: keysets, 2: keyboards
+  price INT,
+  quantity INT,
+  url VARCHAR(300),
+  available BOOLEAN,
+
+  FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
 
 CREATE TABLE images (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  product_id INT NOT NULL,
+  id SERIAL UNIQUE,
+  product_id INT,
   comment VARCHAR(3000),
   url VARCHAR(300),
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
+CREATE TABLE group_buys (
+  id SERIAL UNIQUE,
+  product_id INT NOT NULL,
+  start_date DATE,
+  end_date DATE,
+  geekhack_url VARCHAR(300),
+  reddit_url VARCHAR(300),
+  vendor_url VARCHAR(300),
+  other_url VARCHAR(3000),
+  -- FOREIGN KEY (vendor_id) REFERENCES vendors (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE RESTRICT ON UPDATE CASCADE
+  -- FOREIGN KEY (other_urls_id) REFERENCES urls (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+);
+
 CREATE TABLE keysets (
   id SERIAL UNIQUE,
-  name VARCHAR(30),
+  product_id INT NOT NULL,
   manufacturer VARCHAR(100), -- gmk, epbt
   material VARCHAR(30), -- expects abs, pbt
   profile VARCHAR(30), -- cherry, kat, dcs
   kits VARCHAR(300),
-  tags VARCHAR(500), -- just csv for now
-  vendor_id INT,
-  url VARCHAR(300),
-  image_url VARCHAR(300),
-  description VARCHAR(5000),
-  price INT,
-  quantity INT,
-  available BOOLEAN,
-  FOREIGN KEY (vendor_id) REFERENCES vendors (id)
+  FOREIGN KEY (product_id) REFERENCES products (id)
 );
 
 CREATE TABLE keyboards (
   id SERIAL UNIQUE,
-  tags VARCHAR(500), -- just csv for now
-  name VARCHAR(30),
-  description VARCHAR(5000),
-  vendor_id INT,
-  price INT,
-  quantity INT,
-  available BOOLEAN,
+  product_id INT NOT NULL,
   creator VARCHAR(50), -- designer name, example: Zambumon
   mount_style VARCHAR(100), -- expects top-mount, gasket-mount, etc.
   hotswap BOOLEAN, -- hotswap or soldered
@@ -71,11 +87,15 @@ CREATE TABLE keyboards (
   dimensions VARCHAR(200), -- expects string 100cmx100cmx100cm
   first_appearance DATE,
   connector VARCHAR(20),
-  FOREIGN KEY (vendor_id) REFERENCES vendors(id)
+  FOREIGN KEY (product_id) REFERENCES products(id)
 );
+
+-- Remove price, quantity, name, tags
 
 insert into vendors(name,description,website_url,instagram_url,discord_url,facebook_url,twitter_url,payment_types,location) values('Drop','formerly named Massdrop','https://drop.com','https://www.instagram.com/drop',null,'https://www.facebook.com/drop','https://twitter.com/drop','paypal','US');
 
-insert into keysets(name, manufacturer,material,profile,kits,tags,vendor_id,url,image_url,description, price,quantity,available) values('GMK Laser', 'gmk', 'abs', 'cherry', 'cyberdeck,gaijin,kobe,blocknet,mitowaves,ergo,euro,spacebars,colverak', null, 1, 'https://drop.com/buy/drop-mito-sa-laser-custom-keycap-set', 'https://massdrop-s3.imgix.net/product-images/massdrop-x-mito-gmk-laser-custom-keycap-set/pc_20171031145722.jpg?auto=format&fm=jpg&fit=fill&w=820&h=547&bg=f0f0f0&dpr=2&q=35', 'Step into a world full of bright lights and dark shadows, and artificial intelligence and genuine ‘80s nostalgia with MiTo’s latest set: GMK Laser. Designed by the creator of XDA Godspeed, XDA Canvas, and DSA Legacy, GMK Laser is dripping with futuristic colors and cultural references from the cyberpunk past. Look for allusions to William Gibson’s Neuromancer, Ridley Scott’s Blade Runner, and even Stranger Things. The alphas, done in violet, pair gracefully with the midnight purple modifiers. Brought to life by hot pink and teal legends, the set looks like it was shot straight from the barrel of a laser gun.', 109.99, 2103, false);
+insert into products(tags,name,vendor_id,description,product_type,price,quantity,url,available) values(null, 'GMK Laser', 1, 'Step into a world full of bright lights and dark shadows, and artificial intelligence and genuine ‘80s nostalgia with MiTo’s latest set: GMK Laser. Designed by the creator of XDA Godspeed, XDA Canvas, and DSA Legacy, GMK Laser is dripping with futuristic colors and cultural references from the cyberpunk past. Look for allusions to William Gibson’s Neuromancer, Ridley Scott’s Blade Runner, and even Stranger Things. The alphas, done in violet, pair gracefully with the midnight purple modifiers. Brought to life by hot pink and teal legends, the set looks like it was shot straight from the barrel of a laser gun.', 1, 109.99, 2103, 'https://drop.com/buy/drop-mito-sa-laser-custom-keycap-set', false);
 
-insert into keysets(name, manufacturer,material,profile,kits,tags,vendor_id,url,image_url,description, price,quantity,available) values('GMK Red Samurai', 'gmk', 'abs', 'cherry', 'base,nishi,hiragana,novelties,ergoplanck,norde,dc,spacebars', null, 1, 'https://drop.com/buy/massdrop-x-redsuns-gmk-red-samurai-keycap-set', 'https://massdrop-s3.imgix.net/product-images/massdrop-x-redsuns-gmk-red-samurai-keycap-set/7YKNKVQT6m1ewgcHsAZw_2.jpg?auto=format&fm=jpg&fit=crop&w=1080&bg=f0f0f0&dpr=2&q=35', 'Strap on some armor, unsheath your katana, and prepare to defend your desktop: GMK Red Samurai, the first keycap set from designer RedSuns, features a striking three-toned colorway evocative of a Japanese warrior’s armor. The fierce combination of red and dark gray with golden accents and legends will complement any keyboard, especially dark ones. The inspiration behind the set came from the designer’s interest in Japanese general Ii Naomasa, who played a crucial role in creating the Samurai code during the feudal era. He was also known for charging into battle with vivid red armor to intimidate his enemies. Sculpted in Cherry profile, GMK Red Samurai is compatible with Cherry MX switches and clones.', 129.99, 610, true);
+insert into keysets(product_id, manufacturer,material,profile, kits) values(1, 'gmk', 'abs', 'cherry', 'cyberdeck,gaijin,kobe,blocknet,mitowaves,ergo,euro,spacebars,colverak');
+
+-- insert into keysets(name, manufacturer,material,profile,kits,tags,vendor_id,url,image_url,description, price,quantity,available) values('GMK Red Samurai', 'gmk', 'abs', 'cherry', 'base,nishi,hiragana,novelties,ergoplanck,norde,dc,spacebars', null, 1, 'https://drop.com/buy/massdrop-x-redsuns-gmk-red-samurai-keycap-set', 'https://massdrop-s3.imgix.net/product-images/massdrop-x-redsuns-gmk-red-samurai-keycap-set/7YKNKVQT6m1ewgcHsAZw_2.jpg?auto=format&fm=jpg&fit=crop&w=1080&bg=f0f0f0&dpr=2&q=35', 'Strap on some armor, unsheath your katana, and prepare to defend your desktop: GMK Red Samurai, the first keycap set from designer RedSuns, features a striking three-toned colorway evocative of a Japanese warrior’s armor. The fierce combination of red and dark gray with golden accents and legends will complement any keyboard, especially dark ones. The inspiration behind the set came from the designer’s interest in Japanese general Ii Naomasa, who played a crucial role in creating the Samurai code during the feudal era. He was also known for charging into battle with vivid red armor to intimidate his enemies. Sculpted in Cherry profile, GMK Red Samurai is compatible with Cherry MX switches and clones.', 129.99, 610, true);
