@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./server/index.js",
     "build": "webpack --mode development",
-    "scrape": "node ./webscraper/index.js"
+    "scrape": "node ./webscraper/index.js",
+    "schema": "psql -U postgres -h localhost < ./server/db/schemas/schema.sql"
   },
   "author": "Austin Jang",
   "license": "ISC",
