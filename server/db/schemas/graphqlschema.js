@@ -33,6 +33,7 @@ const KeysetType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
+    product_id: { type: GraphQLID },
     manufacturer: { type: GraphQLString },
     material: { type: GraphQLString },
     profile: { type: GraphQLString },
@@ -58,6 +59,7 @@ const KeyboardType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
+    product_id: { type: GraphQLID },
     tags: { type: GraphQLString },
     description: { type: GraphQLString },
     vendor_id: { type: GraphQLInt },
@@ -115,6 +117,32 @@ const RootQuery = new GraphQLObjectType({
   }
 });
 
+const RootMutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    addKeyset: {
+      type: KeysetType,
+      args: {
+        name: { type: GraphQLNonNull(GraphQLString) },
+        vendor_id: { type: GraphQLNonNull(GraphQLID) },
+        description: { type: GraphQLString },
+        price: { type: GraphQLNonNull(GraphQLFloat) },
+        quantity: { type: GraphQLInt },
+        url: { type: GraphQLNonNull(GraphQLString) },
+        manufacturer: { type: GraphQLNonNull(GraphQLString) },
+        material: { type: GraphQLNonNull(GraphQLString) },
+        profile: { type: GraphQLNonNull(GraphQLString) },
+        kits: { type: GraphQLString },
+        tags: { type: GraphQLString },
+      },
+      resolve(parent, args) { //parent, arguments, context, info
+        return model.insertKeyset([args.name, args.vendor_id, args.description, args.price, args.quantity, args.url, args.manufacturer, args.material, args.profile, args.kit, args.tags]);
+      }
+    }
+  }
+})
+
 module.exports = new GraphQLSchema({
-  query: RootQuery
+  query: RootQuery,
+  mutation: RootMutation
 });
