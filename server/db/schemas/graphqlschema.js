@@ -28,6 +28,7 @@ const ColorQuery = new GraphQLObjectType({
   name: 'Color'
 });
 
+// **grabs keysets by product_id not keyset_id
 const KeysetType = new GraphQLObjectType({
   name: 'Keyset',
   fields: () => ({
@@ -39,6 +40,7 @@ const KeysetType = new GraphQLObjectType({
     profile: { type: GraphQLString },
     kits: { type: GraphQLString },
     tags: { type: GraphQLString },
+    keyset_id: { type: GraphQLInt },
     vendor: {
       type: VendorType,
       resolve(parent, args){
