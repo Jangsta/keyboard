@@ -2,7 +2,7 @@
 
 ## Description
 
-This websiteis a general hub for custom keyboard information with a step-by-step guide and other tools to make a custom mechanical keyboard.
+This website is a general hub for custom mechanical keyboard information with a step-by-step guide and other tools to make a custom keyboard.
 
 ## Built With
 

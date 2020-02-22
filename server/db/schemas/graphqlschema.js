@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 const model = require('../../models');
-const { GraphQLObjectType, GraphQLFloat, GraphQLString, GraphQLID, GraphQLInt, GraphQLBoolean, GraphQLList, GraphQLSchema} = graphql;
+const { GraphQLObjectType, GraphQLFloat, GraphQLString, GraphQLID, GraphQLInt, GraphQLBoolean, GraphQLList, GraphQLSchema, GraphQLNonNull } = graphql;
 
 const VendorType = new GraphQLObjectType({
   name: 'Vendor',

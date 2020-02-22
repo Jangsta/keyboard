@@ -4,14 +4,14 @@ const DataLoader = require("dataloader");
 const models = {
   getKeyset: async ({ id }) => {
     let client = await db.connect();
-    let result = await client.query("SELECT products.id, products.name, products.tags, products.vendor_id, products.description, products.price, products.quantity, products.url, products.available, keysets.manufacturer, keysets.material, keysets.profile, keysets.kits, keysets.tags FROM keysets LEFT JOIN products ON keysets.product_id=products.id WHERE keysets.id=$1::int LIMIT 1", [id]);
+    let result = await client.query("SELECT products.id, products.name, products.tags, products.vendor_id, products.description, products.price, products.quantity, products.url, products.available, keysets.id as keyset_id, keysets.manufacturer, keysets.material, keysets.profile, keysets.kits FROM keysets LEFT JOIN products ON keysets.product_id=products.id WHERE keysets.id=$1::int LIMIT 1", [id]);
     client.release();
     return result.rows;
   },
 
   getKeysets: async () => {
     let client = await db.connect();
-    let sqlquery = "SELECT * FROM keysets";
+    let sqlquery = "SELECT products.id, products.name, products.tags, products.vendor_id, products.description, products.price, products.quantity, products.url, products.available, keysets.id as keyset_id, keysets.manufacturer, keysets.material, keysets.profile, keysets.kits FROM keysets LEFT JOIN products ON keysets.product_id=products.id";
     let result = await client.query(sqlquery);
     client.release();
     return result.rows;
@@ -19,7 +19,7 @@ const models = {
 
   getKeysetsByVendorId: async (ids) => {
     let client = await db.connect();
-    let sqlquery = 'select json_agg(keysets.*) from keysets where vendor_id=ANY($1::int[]) GROUP BY vendor_id';
+    let sqlquery = 'select json_agg(products.*) from products inner join keysets on products.id=keysets.product_id where vendor_id=ANY($1::int[]) GROUP BY vendor_id;';
     let result = await client.query(sqlquery, [ids]);
     client.release();
     return result.rows.map(row => row.json_agg);
@@ -27,8 +27,7 @@ const models = {
 
   insertKeyset: async (params) => {
     let client = await db.connect();
-    let sqlquery = 'BEGIN; INSERT INTO products (name, tags, vendor_id, description, product_type, price, quantity, url, available) VALUES($1,$2); INSERT INTO keysets(manufacturer, material, profile, kits, tags) VALUES ($3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *; COMMIT;'
-    //'INSERT INTO keysets(name, vendor_id, description, price, quantity, url, manufacturer, material, profile, kits, tags) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *';
+    let sqlquery = 'BEGIN; INSERT INTO products (name, tags, vendor_id, description, product_type, price, quantity, url, available) VALUES($1,$2); INSERT INTO keysets(manufacturer, material, profile, kits) VALUES ($3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *; COMMIT;'
     let result = await client.query(sqlquery, params);
     client.release();
     return result.rows;
