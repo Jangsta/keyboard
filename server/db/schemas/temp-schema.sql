@@ -33,6 +33,7 @@ CREATE TABLE products (
   price INT,
   quantity INT,
   available BOOLEAN,
+  url VARCHAR(300),
 
   FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
