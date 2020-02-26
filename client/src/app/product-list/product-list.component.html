@@ -1,7 +1,7 @@
-<div class="card-container">
+<div *ngIf="products" class="card-container">
   <a *ngFor="let product of products" class="card" target="_blank" rel="noopener" href="{{product.url}}">
 
-    <div><img src="{{product.image_url}}">{{product.name}}<br>{{product.vendor}}</div>
+    <div><img src="{{product.url}}">{{product.name}}<br>{{product.vendor.name}}</div>
 
     <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
   
